@@ -1,0 +1,17 @@
+var minRemoval = function(nums, k) {
+    nums.sort((a, b) => a - b); // sort ascending
+    let n = nums.length;
+    let maxLen = 0;
+    let j = 0;
+
+    for (let i = 0; i < n; i++) {
+        // expand j as far as condition holds
+        while (j < n && nums[j] <= nums[i] * k) {
+            j++;
+        }
+        // valid window length
+        maxLen = Math.max(maxLen, j - i);
+    }
+
+    return n - maxLen; // minimum removals
+};
