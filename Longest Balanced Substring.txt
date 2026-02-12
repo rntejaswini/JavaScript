@@ -1,0 +1,31 @@
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var longestBalanced = function(s) {
+    let maxLen = 0;
+    const n = s.length;
+    
+    // Check all substrings
+    for (let i = 0; i < n; i++) {
+        const freq = new Map();
+        for (let j = i; j < n; j++) {
+            const ch = s[j];
+            freq.set(ch, (freq.get(ch) || 0) + 1);
+            
+            // Check if current substring is balanced
+            const counts = Array.from(freq.values());
+            const first = counts[0];
+            if (counts.every(c => c === first)) {
+                maxLen = Math.max(maxLen, j - i + 1);
+            }
+        }
+    }
+    
+    return maxLen;
+};
+
+// Example usage:
+console.log(longestBalanced("abbac"));    // Output: 4
+console.log(longestBalanced("zzabccy"));  // Output: 4
+console.log(longestBalanced("aba"));      // Output: 2
