@@ -1,0 +1,25 @@
+/**
+ * @param {number} turnedOn
+ * @return {string[]}
+ */
+var readBinaryWatch = function(turnedOn) {
+    let result = [];
+    
+    for (let hour = 0; hour < 12; hour++) {
+        for (let minute = 0; minute < 60; minute++) {
+            
+            // Count number of 1s in binary representation
+            let bits = (hour.toString(2) + minute.toString(2))
+                        .split('')
+                        .filter(bit => bit === '1').length;
+            
+            if (bits === turnedOn) {
+                // Format minute with leading zero if needed
+                let time = hour + ":" + (minute < 10 ? "0" + minute : minute);
+                result.push(time);
+            }
+        }
+    }
+    
+    return result;
+};
