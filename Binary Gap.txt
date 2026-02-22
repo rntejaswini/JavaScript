@@ -1,0 +1,22 @@
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var binaryGap = function(n) {
+    let lastIndex = -1;
+    let maxDistance = 0;
+    let currentIndex = 0;
+    
+    while (n > 0) {
+        if (n & 1) {  // If the current bit is 1
+            if (lastIndex !== -1) {
+                maxDistance = Math.max(maxDistance, currentIndex - lastIndex);
+            }
+            lastIndex = currentIndex;
+        }
+        n >>= 1;  // Right shift to check next bit
+        currentIndex++;
+    }
+    
+    return maxDistance;
+};
