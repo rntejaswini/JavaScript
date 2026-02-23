@@ -1,0 +1,24 @@
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {boolean}
+ */
+var hasAllCodes = function(s, k) {
+    const need = 1 << k;          // total number of binary codes of length k
+    const seen = new Set();
+    let hash = 0;
+    let mask = need - 1;          // keeps last k bits
+
+    for (let i = 0; i < s.length; i++) {
+        // shift left and add current bit
+        hash = ((hash << 1) & mask) | (s[i] - '0');
+
+        // start recording only after first k characters
+        if (i >= k - 1) {
+            seen.add(hash);
+            if (seen.size === need) return true; // early stop
+        }
+    }
+
+    return false;
+};
