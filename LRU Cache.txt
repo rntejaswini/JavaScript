@@ -1,0 +1,75 @@
+// Doubly Linked List Node
+function Node(key, value) {
+    this.key = key;
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+}
+
+/**
+ * @param {number} capacity
+ */
+var LRUCache = function(capacity) {
+    this.capacity = capacity;
+    this.map = new Map();
+
+    // Dummy head and tail
+    this.head = new Node(0, 0);
+    this.tail = new Node(0, 0);
+
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+};
+
+// Remove node from list
+LRUCache.prototype.remove = function(node) {
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+};
+
+// Insert node right after head (most recently used)
+LRUCache.prototype.insert = function(node) {
+    node.next = this.head.next;
+    node.prev = this.head;
+    this.head.next.prev = node;
+    this.head.next = node;
+};
+
+/** 
+ * @param {number} key
+ * @return {number}
+ */
+LRUCache.prototype.get = function(key) {
+    if (!this.map.has(key)) return -1;
+
+    let node = this.map.get(key);
+    this.remove(node);
+    this.insert(node); // move to front
+
+    return node.value;
+};
+
+/** 
+ * @param {number} key 
+ * @param {number} value
+ * @return {void}
+ */
+LRUCache.prototype.put = function(key, value) {
+    if (this.map.has(key)) {
+        let node = this.map.get(key);
+        node.value = value;
+        this.remove(node);
+        this.insert(node);
+    } else {
+        if (this.map.size === this.capacity) {
+            // Remove LRU (node before tail)
+            let lru = this.tail.prev;
+            this.remove(lru);
+            this.map.delete(lru.key);
+        }
+
+        let newNode = new Node(key, value);
+        this.insert(newNode);
+        this.map.set(key, newNode);
+    }
+};
