@@ -1,0 +1,25 @@
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var numSteps = function(s) {
+    let steps = 0;
+    let carry = 0;
+
+    // Traverse from right to left (ignore the first bit)
+    for (let i = s.length - 1; i > 0; i--) {
+        let bit = Number(s[i]);
+
+        if (bit + carry === 1) {
+            // Odd -> add 1 then divide
+            steps += 2;
+            carry = 1;
+        } else {
+            // Even -> just divide
+            steps += 1;
+        }
+    }
+
+    // If carry remains, we need one extra step
+    return steps + carry;
+};
