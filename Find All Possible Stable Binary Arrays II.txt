@@ -1,0 +1,57 @@
+/**
+ * @param {number} zero
+ * @param {number} one
+ * @param {number} limit
+ * @return {number}
+ */
+var numberOfStableArrays = function(zero, one, limit) {
+    const MOD = 1000000007;
+    
+    // Flattened array for cache locality: (zero+1) * (one+1) * 2
+    const size = (zero + 1) * (one + 1);
+    const dp = new Uint32Array(size * 2);
+
+    // Helper to get index in flat array
+    // dp[i][j][0] -> (i * (one + 1) + j) * 2
+    // dp[i][j][1] -> (i * (one + 1) + j) * 2 + 1
+    const stride = (one + 1) * 2;
+
+    // Base cases
+    for (let i = 1; i <= Math.min(zero, limit); i++) {
+        dp[i * stride] = 1; // dp[i][0][0]
+    }
+    for (let j = 1; j <= Math.min(one, limit); j++) {
+        dp[j * 2 + 1] = 1; // dp[0][j][1]
+    }
+
+    for (let i = 1; i <= zero; i++) {
+        const rowOffset = i * stride;
+        const prevRowOffset = (i - 1) * stride;
+        const limitRowOffset = (i - limit - 1) * stride;
+
+        for (let j = 1; j <= one; j++) {
+            const idx = rowOffset + j * 2;
+            const prevJIdx = rowOffset + (j - 1) * 2;
+            const prevIIdx = prevRowOffset + j * 2;
+
+            // dp[i][j][0]
+            let val0 = (dp[prevIIdx] + dp[prevIIdx + 1]) % MOD;
+            if (i > limit) {
+                // Subtract dp[i - limit - 1][j][1]
+                val0 = (val0 - dp[limitRowOffset + j * 2 + 1] + MOD) % MOD;
+            }
+            dp[idx] = val0;
+
+            // dp[i][j][1]
+            let val1 = (dp[prevJIdx] + dp[prevJIdx + 1]) % MOD;
+            if (j > limit) {
+                // Subtract dp[i][j - limit - 1][0]
+                val1 = (val1 - dp[rowOffset + (j - limit - 1) * 2] + MOD) % MOD;
+            }
+            dp[idx + 1] = val1;
+        }
+    }
+
+    const lastIdx = (zero * (one + 1) + one) * 2;
+    return (dp[lastIdx] + dp[lastIdx + 1]) % MOD;
+};
