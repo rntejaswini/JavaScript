@@ -1,0 +1,40 @@
+/**
+ * @param {character[][]} grid
+ * @return {number}
+ */
+var numberOfSubmatrices = function(grid) {
+    const rows = grid.length;
+    const cols = grid[0].length;
+    
+    // 2D prefix sum arrays for 'X' and 'Y'
+    // Using typed arrays for better performance in large matrices
+    const countX = Array.from({ length: rows + 1 }, () => new Int32Array(cols + 1));
+    const countY = Array.from({ length: rows + 1 }, () => new Int32Array(cols + 1));
+    
+    let result = 0;
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            // Calculate prefix sum for 'X'
+            countX[r + 1][c + 1] = (grid[r][c] === 'X' ? 1 : 0) + 
+                                  countX[r][c + 1] + 
+                                  countX[r + 1][c] - 
+                                  countX[r][c];
+            
+            // Calculate prefix sum for 'Y'
+            countY[r + 1][c + 1] = (grid[r][c] === 'Y' ? 1 : 0) + 
+                                  countY[r][c + 1] + 
+                                  countY[r + 1][c] - 
+                                  countY[r][c];
+            
+            // Check conditions: 
+            // 1. Equal frequency of X and Y
+            // 2. At least one X
+            if (countX[r + 1][c + 1] === countY[r + 1][c + 1] && countX[r + 1][c + 1] > 0) {
+                result++;
+            }
+        }
+    }
+
+    return result;
+};
