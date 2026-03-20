@@ -1,0 +1,44 @@
+var minAbsDiff = function(grid, k) {
+    let m = grid.length;
+    let n = grid[0].length;
+    
+    let result = Array.from({ length: m - k + 1 }, () => 
+        new Array(n - k + 1).fill(0)
+    );
+
+    for (let i = 0; i <= m - k; i++) {
+        for (let j = 0; j <= n - k; j++) {
+
+            let arr = [];
+
+            // collect elements
+            for (let x = i; x < i + k; x++) {
+                for (let y = j; y < j + k; y++) {
+                    arr.push(grid[x][y]);
+                }
+            }
+
+            // ✅ remove duplicates
+            let unique = [...new Set(arr)];
+
+            // if only one unique value → answer is 0
+            if (unique.length <= 1) {
+                result[i][j] = 0;
+                continue;
+            }
+
+            // sort
+            unique.sort((a, b) => a - b);
+
+            // find min difference
+            let minDiff = Infinity;
+            for (let t = 1; t < unique.length; t++) {
+                minDiff = Math.min(minDiff, unique[t] - unique[t - 1]);
+            }
+
+            result[i][j] = minDiff;
+        }
+    }
+
+    return result;
+};
